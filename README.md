@@ -1,8 +1,8 @@
 # Pokémon AI Battle Agent
 ### Heuristic-Based Strategic Modeling in 1v1 Competitive Singles
 
-> **Development Note:** This repository is a refactored consolidation of a research project 
-> originally developed in [Month/Year]. It has been re-uploaded to establish a modular 
+> **Development Note:** This repository is a refactored consolidation of a project 
+> originally developed in ~[Feb/2022]. It has been re-uploaded to establish a modular 
 > architecture and to facilitate formal benchmarking of the heuristic engines.
 
 ## Project Overview
