@@ -16,6 +16,8 @@ The repository evaluates three distinct tiers of agent intelligence:
     * **KO-Priority Logic**: Before evaluating general moves, the agent checks if any available move is a guaranteed Knock Out (KO) based on its estimated damage, ensuring it never misses an opportunity to secure a kill.
     * **STAB-Preference Algorithm**: A filtering system that prioritizes moves with STAB bonuses when multiple super-effective or neutral options exist.
 
+[Smarter Guy Decision Tree](https://github.com/ErebusMonkey3691/Pok-mon-AI-Battle-Agent/blob/main/docs/maxDamageV3DecisionTree.png)
+
 ## Technical Implementation
 The core of the "Smarter" logic is built on **Weighted State Evaluation**. Rather than just looking at the current turn, the agent evaluates the *utility* of its moves:
 1. **Tier 1 (Lethality)**: Can I KO the opponent right now?
