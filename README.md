@@ -1,6 +1,10 @@
 # Pokémon AI Battle Agent
 ### Heuristic-Based Strategic Modeling in 1v1 Competitive Singles
 
+> **Development Note:** This repository is a refactored consolidation of a research project 
+> originally developed in [Month/Year]. It has been re-uploaded to establish a modular 
+> architecture and to facilitate formal benchmarking of the heuristic engines.
+
 ## Project Overview
 This project features an autonomous battle agent developed to navigate the strategic complexities of competitive Pokémon Singles. Utilizing the `poke-env` library, the agent implements a custom decision engine that moves beyond simple "Greedy" algorithms. It incorporates statistical estimation and damage-calculus to emulate the predictive reasoning used by high-level players.
 
