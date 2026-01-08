@@ -1,34 +1,37 @@
 # Pok-mon-AI-Battle-Agent
-### Heuristic-Based Decision Engines for Competitive 1v1 Singles
+### Heuristic-Based Strategic Modeling in 1v1 Competitive Singles
 
 ## Project Overview
-This repository contains a battle agent designed to emulate the decision-making of competitive Pokémon Singles players. Unlike doubles, high-level Singles is defined by **Momentum Management** and **Predictive Switching**. This project implements a weighted heuristic engine that evaluates the board state not just for immediate damage, but for long-term "Win Condition" preservation.
-
-The agent interacts with the Pokémon Showdown environment via the `poke-env` library, aiming to provide a human-like challenge by prioritizing strategic positioning over "Greedy" (max-damage) play.
+This project features an autonomous battle agent developed to navigate the strategic complexities of competitive Pokémon Singles. Utilizing the `poke-env` library, the agent implements a custom decision engine that moves beyond simple "Greedy" algorithms. It incorporates statistical estimation and damage-calculus to emulate the predictive reasoning used by high-level players.
 
 
 
-## Core Features & Methodology
-The agent’s "Smarter" logic focuses on three pillars of competitive 1v1 play:
+## Agent Logic & Architecture
+The repository evaluates three distinct tiers of agent intelligence:
 
-* **Momentum & Switching:** The agent evaluates the "Switch-in Value" of every party member. It identifies if staying in leads to a "Forced Out" scenario and proactively switches to a counter-measure to maintain momentum.
-* **Type-Matchup Calculus:** Moves beyond simple "Super Effective" checks. The heuristic weights both offensive pressure and defensive resistance to ensure the agent doesn't lose its "Checks" early in the match.
-* **Risk/Reward Weighting:** Accounts for move accuracy and the "Stalling" potential of opponents. It recognizes when a high-power move is too risky compared to a consistent, accurate alternative.
+* **`MaxDamagePlayer` (The Baseline)**: A greedy agent that selects moves based solely on raw Base Power, failing to account for type resistances or defensive stats.
+* **`SmarterGuy` (The Heuristic Engine)**: My primary contribution. This agent utilizes several sophisticated sub-modules to evaluate the board state:
+    * **Statistical Inference**: Since opponent stats are hidden, the agent employs `hpCalc` and `defence_estimate` to approximate the target's HP and defensive bulk based on level and base species data.
+    * **Damage Calculus (`damage_calc`)**: A reconstructed version of the Pokémon damage formula that accounts for STAB (Same Type Attack Bonus), Burn status, type multipliers, and even "low-roll" random variance to ensure conservative, reliable decision-making.
+    * **KO-Priority Logic**: Before evaluating general moves, the agent checks if any available move is a guaranteed Knock Out (KO) based on its estimated damage, ensuring it never misses an opportunity to secure a kill.
+    * **STAB-Preference Algorithm**: A filtering system that prioritizes moves with STAB bonuses when multiple super-effective or neutral options exist.
 
-## System Architecture
-To ensure a rigorous experimental approach, the project is divided into modular scripts:
+## Technical Implementation
+The core of the "Smarter" logic is built on **Weighted State Evaluation**. Rather than just looking at the current turn, the agent evaluates the *utility* of its moves:
+1. **Tier 1 (Lethality)**: Can I KO the opponent right now?
+2. **Tier 2 (Efficiency)**: Is there a Super-Effective move? If so, does it have STAB?
+3. **Tier 3 (Neutral Pressure)**: If no advantage exists, which move provides the most consistent neutral damage?
 
-* **`agents.py`**: A centralized library containing agent classes (Random, Max-Damage, and Heuristic-based).
-* **`benchmarks.py`**: A benchmarking harness used to cross-evaluate agent performance. By running thousands of trials, the system quantifies the "Win Rate Delta" provided by advanced heuristics.
 
-## Technical Challenges
-* **Information Scarcity:** Inferring an opponent's set (Items, EVs, and Abilities) through limited turn data—a core component of competitive 1v1.
-* **Stochastic States:** Navigating turns where a single "Miss" or "Critical Hit" could shift the entire win-probability of the match.
-* **Resource Preservation:** Calculating when it is mathematically better to "Sacrifice" a low-HP Pokémon to gain a "Clean Switch" for a teammate.
+
+## Key Achievements
+* **Inference under Uncertainty**: Successfully implemented a system to estimate hidden opponent variables (EVs/IVs/Stats) to inform tactical choices.
+* **Deterministic Modeling of Stochastic Events**: By assuming "low-roll" damage outcomes, the agent mitigates the risk of non-deterministic failure in critical turns.
+* **Modular Benchmarking**: Designed a system to cross-evaluate these agents, quantifying the performance increase gained through heuristic state-estimation.
 
 ## Installation & Usage
-1. **Prerequisites:** Python 3.8+ and a local [Pokémon Showdown Server](https://github.com/smogon/pokemon-showdown).
-2. **Setup:**
+1. **Prerequisites**: Python 3.8+ and a local Pokémon Showdown Server.
+2. **Setup**:
    ```bash
-   git clone https://github.com/yourusername/Pok-mon-AI-Battle-Agent.git
+   git clone [https://github.com/yourusername/Pok-mon-AI-Battle-Agent.git](https://github.com/yourusername/Pok-mon-AI-Battle-Agent.git)
    pip install -r requirements.txt
