@@ -11,12 +11,13 @@ The repository evaluates three distinct tiers of agent intelligence:
 
 * **`MaxDamagePlayer` (The Baseline)**: A greedy agent that selects moves based solely on raw Base Power, failing to account for type resistances or defensive stats.
 * **`SmarterGuy` (The Heuristic Engine)**: My primary contribution. This agent utilizes several sophisticated sub-modules to evaluate the board state:
-    * **Statistical Inference**: Since opponent stats are hidden, the agent employs `hpCalc` and `defence_estimate` to approximate the target's HP and defensive bulk based on level and base species data.
+    * **Statistical Inference**: Since opponent stats are hidden, the agent employs `hpCalc` and `defence_estimate` to approximate the target's HP and defensive bulk based on level and base species data. It assumes the worst, in line with a min-max strategy.
     * **Damage Calculus (`damage_calc`)**: A reconstructed version of the Pokémon damage formula that accounts for STAB (Same Type Attack Bonus), Burn status, type multipliers, and even "low-roll" random variance to ensure conservative, reliable decision-making.
     * **KO-Priority Logic**: Before evaluating general moves, the agent checks if any available move is a guaranteed Knock Out (KO) based on its estimated damage, ensuring it never misses an opportunity to secure a kill.
     * **STAB-Preference Algorithm**: A filtering system that prioritizes moves with STAB bonuses when multiple super-effective or neutral options exist.
 
-[Smarter Guy Decision Tree](https://github.com/ErebusMonkey3691/Pok-mon-AI-Battle-Agent/blob/main/docs/maxDamageV3DecisionTree.png)
+Below is a decision tree of the `SmarterGuy` agent:
+![Smarter Guy Decision Tree](https://github.com/ErebusMonkey3691/Pok-mon-AI-Battle-Agent/blob/main/docs/maxDamageV3DecisionTree.png)
 
 ## Technical Implementation
 The core of the "Smarter" logic is built on **Weighted State Evaluation**. Rather than just looking at the current turn, the agent evaluates the *utility* of its moves:
