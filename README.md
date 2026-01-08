@@ -36,5 +36,5 @@ The core of the "Smarter" logic is built on **Weighted State Evaluation**. Rathe
 1. **Prerequisites**: Python 3.8+ and a local Pokémon Showdown Server.
 2. **Setup**:
    ```bash
-   git clone [https://github.com/yourusername/Pok-mon-AI-Battle-Agent.git](https://github.com/yourusername/Pok-mon-AI-Battle-Agent.git)
+   git clone https://github.com/ErebusMonkey3691/Pok-mon-AI-Battle-Agent.git
    pip install -r requirements.txt
