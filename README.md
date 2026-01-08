@@ -1,4 +1,4 @@
-# Pokémon-AI-Battle-Agent
+# Pokémon AI Battle Agent
 ### Heuristic-Based Strategic Modeling in 1v1 Competitive Singles
 
 ## Project Overview
