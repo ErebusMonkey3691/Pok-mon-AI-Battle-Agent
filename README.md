@@ -30,5 +30,5 @@ To ensure a rigorous experimental approach, the project is divided into modular 
 1. **Prerequisites:** Python 3.8+ and a local [Pokémon Showdown Server](https://github.com/smogon/pokemon-showdown).
 2. **Setup:**
    ```bash
-   git clone [https://github.com/yourusername/Pok-mon-AI-Battle-Agent.git](https://github.com/yourusername/Pok-mon-AI-Battle-Agent.git)
+   git clone https://github.com/yourusername/Pok-mon-AI-Battle-Agent.git
    pip install -r requirements.txt
