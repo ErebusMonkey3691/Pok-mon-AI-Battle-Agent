@@ -1,11 +1,27 @@
-
 from math import trunc
 
 from poke_env.battle.pokemon import Pokemon
 from poke_env.player.player import Player
 from poke_env.battle.pokemon_type import PokemonType
+from poke_env.data.gen_data import GenData
 
+class MaxDamagePlayer(Player):
+    
+    TYPE_CHART = GenData(8).type_chart
+
+    def choose_move(self, battle):
+        # If the player is able to attack, attack
+        if battle.available_moves:
+            # Find the highest base_power move among available ones
+            best_move = max(battle.available_moves, key=lambda move: move.base_power)
+            return self.create_order(best_move)
+        # If no attack is available, a random switch will be made
+        else:
+            return self.choose_random_move(battle)
+        
 class SmarterGuy(Player):
+    
+    TYPE_CHART = GenData(8).type_chart
 
     def choose_move(self, battle):
         print(battle.opponent_active_pokemon) # Print what pokemon is the opponent pokemon
@@ -20,7 +36,7 @@ class SmarterGuy(Player):
             # Check for super effective moves
             move_options = []
             for move in battle.available_moves: # Cycle through each move available
-                if PokemonType.damage_multiplier(move.type, battle.opponent_active_pokemon.type_1, battle.opponent_active_pokemon.type_2) > 1: # If move is super effective (multiplier > 1)
+                if PokemonType.damage_multiplier(move.type, battle.opponent_active_pokemon.type_1, battle.opponent_active_pokemon.type_2, type_chart=self.TYPE_CHART) > 1: # If move is super effective (multiplier > 1)
                     move_options.append(move) # Add move to move options list
             # Check if any super effective moves were found
             if move_options != []: # If so, continue to check for STAB
@@ -28,7 +44,7 @@ class SmarterGuy(Player):
             else: # If not, check for neutral moves
                 for move in battle.available_moves: # Cycle through each move
                     move_options = []
-                    if PokemonType.damage_multiplier(move.type, battle.opponent_active_pokemon.type_1, battle.opponent_active_pokemon.type_2) == 1: # If move is neutral (multiplier = 1)
+                    if PokemonType.damage_multiplier(move.type, battle.opponent_active_pokemon.type_1, battle.opponent_active_pokemon.type_2, type_chart=self.TYPE_CHART) == 1: # If move is neutral (multiplier = 1)
                         move_options.append(move)
                 if move_options != []: # If there is a neutral move
                     return self.create_order(self.stab_check(battle.active_pokemon, move_options)) # STAB check, returning a viable move
@@ -58,12 +74,12 @@ class SmarterGuy(Player):
         best_move = max(moves, key=lambda move : move.base_power) # Doesn't account for effectiveness in this calculation, just base power. <- should be fine as it's used in effectiveness brackets (only exception is 4x effectiveness)
         return best_move
 
-    def damage_output(available_moves, enemyPokemon):
+    def damage_output(self, available_moves, enemyPokemon):
         best_move = None
         for move in available_moves:
             if best_move == None:
                 best_move = move
-            elif (PokemonType.damage_multiplier(move.type, enemyPokemon.type_1, enemyPokemon.type_2) * move.base_power) > (PokemonType.damage_multiplier(best_move.type, enemyPokemon.type_1, enemyPokemon.type_2) * move.base_power):
+            elif (PokemonType.damage_multiplier(move.type, enemyPokemon.type_1, enemyPokemon.type_2, type_chart=self.TYPE_CHART) * move.base_power) > (PokemonType.damage_multiplier(best_move.type, enemyPokemon.type_1, enemyPokemon.type_2, type_chart=self.TYPE_CHART) * move.base_power):
                 best_move = move
         return best_move
 
@@ -97,7 +113,7 @@ class SmarterGuy(Player):
         damage = trunc(damage / 50) + 2
         damage = trunc(damage * 0.85) # accounting for the random roll on damage, assuming a low roll
         damage = trunc(damage * stab) 
-        damage = trunc(damage * PokemonType.damage_multiplier(move.type, target_pokemon.type_1, target_pokemon.type_2)) # Type bonus
+        damage = trunc(damage * PokemonType.damage_multiplier(move.type, target_pokemon.type_1, target_pokemon.type_2, type_chart=self.TYPE_CHART)) # Type bonus
         damage = trunc(damage * burn)
         return damage
         # Damage calculation only accounts for:
@@ -119,3 +135,31 @@ class SmarterGuy(Player):
         defence = trunc(defence / 100) + 5
         # defence = trunc(defence * nature) <- when nature wants to be accounted for
         return defence
+
+class TestPlayer(Player):
+
+    TYPE_CHART = GenData(8).type_chart
+
+    def choose_move(self, battle):
+        # Print what pokemon is the opponent pokemon
+        # print(battle.opponent_active_pokemon)
+
+        # Check if player is able to attack
+        if battle.available_moves:
+            # Find the highest base_power move among available ones
+            best_move = self.damage_output(battle.available_moves, battle.opponent_active_pokemon)
+            
+            # print("Selected move has a damage multiplier of: %s" % (PokemonType.damage_multiplier(best_move.type, battle.opponent_active_pokemon.type_1, battle.opponent_active_pokemon.type_2, type_chart=self.TYPE_CHART)))
+            return self.create_order(best_move)
+        # If no attack is available, a random switch will be made
+        else:
+            return self.choose_random_move(battle)
+
+    def damage_output(self, available_moves, enemyPokemon):
+        best_move = None
+        for move in available_moves:
+            if best_move == None:
+                best_move = move
+            elif (PokemonType.damage_multiplier(move.type, enemyPokemon.type_1, enemyPokemon.type_2, type_chart=self.TYPE_CHART) * move.base_power) > (PokemonType.damage_multiplier(best_move.type, enemyPokemon.type_1, enemyPokemon.type_2, type_chart=self.TYPE_CHART) * move.base_power):
+                best_move = move
+        return best_move
